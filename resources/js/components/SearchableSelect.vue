@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
 import { Check, ChevronsUpDown, X } from 'lucide-vue-next';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useId } from 'vue';
+import { computed, onMounted, ref, useId, watch } from 'vue';
 import { Badge } from '@/components/ui/badge';
 import {
     Combobox,
@@ -99,7 +98,7 @@ watch(
             }
         });
     },
-    { immediate: true, deep: true },
+    { immediate: true },
 );
 
 const selectedOptions = computed(() =>
@@ -140,12 +139,20 @@ const displayOptions = computed(() => {
                 // Prepend selected option when not searching so user can see it in list
                 const selected = selectedValues.value
                     .map((v) => {
+                        const strVal = String(v);
                         const opt = fetchedOptions.value.find(
                             (o) =>
-                                String(o.value) === String(v) ||
-                                String(o.label) === String(v),
+                                String(o.value) === strVal ||
+                                String(o.label) === strVal,
                         );
-                        return opt ?? { value: v, label: v };
+                        return (
+                            opt ?? {
+                                value: v,
+                                label:
+                                    selectedOptionsCache.value[strVal] ??
+                                    strVal,
+                            }
+                        );
                     })
                     .filter((o) => o.value);
                 const fromFetched = fetchedOptions.value.filter(
@@ -258,15 +265,9 @@ function removeValue(value: string, event: Event): void {
 </script>
 
 <template>
-    <Combobox
-        :name="id ?? instanceId"
-        :model-value="multiple ? selectedValues : (selectedValues[0] ?? null)"
-        :multiple="multiple"
-        :open="effectiveOpen"
-        :open-on-click="true"
-        :ignore-filter="!!optionsUrl"
-        :reset-search-term-on-select="false"
-        @update:model-value="
+    <Combobox :name="id ?? instanceId" :model-value="multiple ? selectedValues : (selectedValues[0] ?? null)"
+        :multiple="multiple" :open="effectiveOpen" :open-on-click="true" :ignore-filter="!!optionsUrl"
+        :reset-search-term-on-select="false" @update:model-value="
             emit(
                 'update:modelValue',
                 multiple
@@ -274,61 +275,37 @@ function removeValue(value: string, event: Event): void {
                         ? $event
                         : []
                     : Array.isArray($event)
-                      ? ($event[0] ?? null)
-                      : ($event ?? null),
+                        ? ($event[0] ?? null)
+                        : ($event ?? null),
             )
-        "
-        @update:open="handleOpenChange"
-    >
-        <ComboboxAnchor
-            :class="
-                cn(
-                    'flex h-auto min-h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors',
-                    'focus-within:ring-1 focus-within:ring-ring focus-within:outline-none',
-                    props.class,
-                )
-            "
-        >
-            <ComboboxTrigger
-                :id="id"
-                as-child
-                class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 outline-none"
-            >
-                <button
-                    type="button"
-                    class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 bg-transparent text-left outline-none"
-                >
-                    <span
-                        v-if="multiple && selectedOptions.length > 0"
-                        class="flex flex-1 flex-wrap items-center gap-1"
-                    >
-                        <Badge
-                            v-for="(opt, i) in selectedOptions"
-                            :key="`${instanceId}-badge-${opt.value}-${i}`"
-                            variant="secondary"
-                            class="gap-1 pr-1 font-normal"
-                        >
+            " @update:open="handleOpenChange">
+        <ComboboxAnchor :class="cn(
+            'flex h-auto min-h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors',
+            'focus-within:ring-1 focus-within:ring-ring focus-within:outline-none',
+            props.class,
+        )
+            ">
+            <ComboboxTrigger :id="id" as-child
+                class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 outline-none">
+                <button type="button"
+                    class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 bg-transparent text-left outline-none">
+                    <span v-if="multiple && selectedOptions.length > 0"
+                        class="flex flex-1 flex-wrap items-center gap-1">
+                        <Badge v-for="(opt, i) in selectedOptions" :key="`${instanceId}-badge-${opt.value}-${i}`"
+                            variant="secondary" class="gap-1 pr-1 font-normal">
                             {{ opt.label }}
-                            <button
-                                v-if="allowClear"
-                                type="button"
+                            <button v-if="allowClear" type="button"
                                 class="rounded-full ring-offset-background outline-none hover:bg-secondary focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                aria-label="Remove"
-                                @click.stop="removeValue(opt.value, $event)"
-                            >
+                                aria-label="Remove" @click.stop="removeValue(opt.value, $event)">
                                 <X class="size-3.5" />
                             </button>
                         </Badge>
                     </span>
-                    <span
-                        v-else
-                        :class="
-                            cn(
-                                'flex-1 truncate text-left',
-                                !displayValue && 'text-muted-foreground',
-                            )
-                        "
-                    >
+                    <span v-else :class="cn(
+                        'flex-1 truncate text-left',
+                        !displayValue && 'text-muted-foreground',
+                    )
+                        ">
                         {{ displayValue || placeholder }}
                     </span>
                     <ChevronsUpDown class="size-4 shrink-0 opacity-50" />
@@ -337,39 +314,25 @@ function removeValue(value: string, event: Event): void {
             <ComboboxCancel class="sr-only" />
         </ComboboxAnchor>
 
-        <ComboboxList
-            class="max-h-[300px] w-[var(--reka-combobox-trigger-width)] p-0"
-            align="start"
-        >
+        <ComboboxList class="max-h-[300px] w-(--reka-combobox-trigger-width) p-0" align="start">
             <div class="relative">
-                <ComboboxInput
-                    v-model="searchTerm"
-                    :placeholder="placeholder"
-                    class="flex-1 rounded-none border-0 pr-10"
-                />
+                <ComboboxInput v-model="searchTerm" :placeholder="placeholder"
+                    class="flex-1 rounded-none border-0 pr-10" />
             </div>
             <ComboboxViewport>
                 <ComboboxEmpty>
                     {{ optionsLoading ? 'Searching...' : 'No results found.' }}
                 </ComboboxEmpty>
                 <ComboboxGroup>
-                    <ComboboxItem
-                        v-for="(opt, i) in displayOptions"
-                        :key="`${instanceId}-item-${opt.value}-${i}`"
-                        :value="opt.value"
-                        :text-value="opt.label"
-                    >
-                        <Check
-                            v-if="multiple"
-                            :class="
-                                cn(
-                                    'mr-2 size-4 shrink-0',
-                                    selectedValues.includes(opt.value)
-                                        ? 'opacity-100'
-                                        : 'opacity-0',
-                                )
-                            "
-                        />
+                    <ComboboxItem v-for="(opt, i) in displayOptions" :key="`${instanceId}-item-${opt.value}-${i}`"
+                        :value="opt.value" :text-value="opt.label">
+                        <Check v-if="multiple" :class="cn(
+                            'mr-2 size-4 shrink-0',
+                            selectedValues.includes(opt.value)
+                                ? 'opacity-100'
+                                : 'opacity-0',
+                        )
+                            " />
                         <ComboboxItemIndicator v-else class="mr-2">
                             <Check class="size-4" />
                         </ComboboxItemIndicator>
