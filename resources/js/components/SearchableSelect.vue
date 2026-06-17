@@ -74,13 +74,41 @@ const selectedValues = computed(() => {
     return Array.isArray(val) ? val : [val];
 });
 
+// Cache for storing selected options' labels so they are not lost when searching or filtering
+const selectedOptionsCache = ref<Record<string, string>>({});
+
+watch(
+    [selectedValues, () => props.options, fetchedOptions],
+    () => {
+        selectedValues.value.forEach((v) => {
+            const strVal = String(v);
+
+            // Try to find the label in props.options first
+            const opt = props.options?.find((o) => String(o.value) === strVal);
+            if (opt) {
+                selectedOptionsCache.value[strVal] = opt.label;
+                return;
+            }
+
+            // Otherwise try to find in fetchedOptions
+            const fetched = fetchedOptions.value.find(
+                (o) => String(o.value) === strVal || String(o.label) === strVal,
+            );
+            if (fetched) {
+                selectedOptionsCache.value[strVal] = fetched.label;
+            }
+        });
+    },
+    { immediate: true, deep: true },
+);
+
 const selectedOptions = computed(() =>
     selectedValues.value.map((v) => {
-        const opt = displayOptions.value.find(
-            (o) =>
-                String(o.value) === String(v) || String(o.label) === String(v),
-        );
-        return opt ?? { value: v, label: v };
+        const strVal = String(v);
+        return {
+            value: v,
+            label: selectedOptionsCache.value[strVal] ?? strVal,
+        };
     }),
 );
 
@@ -93,19 +121,56 @@ const displayValue = computed(() => {
 
 const displayOptions = computed(() => {
     if (props.optionsUrl) {
-        const selected = selectedValues.value
-            .map((v) => {
-                const opt = fetchedOptions.value.find(
-                    (o) => o.value === v || o.label === v,
+        if (props.multiple) {
+            // If multiple, exclude checked/selected items from dropdown completely
+            return fetchedOptions.value
+                .filter(
+                    (o) =>
+                        !selectedValues.value.some(
+                            (v) => String(v) === String(o.value),
+                        ),
+                )
+                .slice(0, props.maxOptions);
+        } else {
+            // For single select:
+            // If searching, do NOT show the checked ones unless they match the search query (i.e. are in fetchedOptions)
+            if (searchTerm.value) {
+                return fetchedOptions.value.slice(0, props.maxOptions);
+            } else {
+                // Prepend selected option when not searching so user can see it in list
+                const selected = selectedValues.value
+                    .map((v) => {
+                        const opt = fetchedOptions.value.find(
+                            (o) =>
+                                String(o.value) === String(v) ||
+                                String(o.label) === String(v),
+                        );
+                        return opt ?? { value: v, label: v };
+                    })
+                    .filter((o) => o.value);
+                const fromFetched = fetchedOptions.value.filter(
+                    (o) =>
+                        !selected.some(
+                            (s) => String(s.value) === String(o.value),
+                        ),
                 );
-                return opt ?? { value: v, label: v };
-            })
-            .filter((o) => o.value);
-        const fromFetched = fetchedOptions.value.filter(
-            (o) => !selected.some((s) => s.value === o.value),
-        );
-        return [...selected, ...fromFetched].slice(0, props.maxOptions);
+                return [...selected, ...fromFetched].slice(0, props.maxOptions);
+            }
+        }
     }
+
+    if (props.multiple) {
+        // Static options (multiple): filter out checked items
+        return (props.options ?? [])
+            .filter(
+                (o) =>
+                    !selectedValues.value.some(
+                        (v) => String(v) === String(o.value),
+                    ),
+            )
+            .slice(0, props.maxOptions);
+    }
+
     return (props.options ?? []).slice(0, props.maxOptions);
 });
 
@@ -195,9 +260,7 @@ function removeValue(value: string, event: Event): void {
 <template>
     <Combobox
         :name="id ?? instanceId"
-        :model-value="
-            multiple ? selectedValues : (selectedValues[0] ?? null)
-        "
+        :model-value="multiple ? selectedValues : (selectedValues[0] ?? null)"
         :multiple="multiple"
         :open="effectiveOpen"
         :open-on-click="true"
