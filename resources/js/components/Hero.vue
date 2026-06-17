@@ -152,176 +152,105 @@ onUnmounted(() => {
 
 <template>
     <section
-        class="relative overflow-hidden border-b border-border bg-gradient-to-b from-background via-muted/30 to-background"
-    >
+        class="relative overflow-hidden border-b border-border bg-gradient-to-b from-background via-muted/30 to-background">
         <!-- Decorative background elements -->
-        <div
-            class="pointer-events-none absolute inset-0 overflow-hidden"
-            aria-hidden="true"
-        >
-            <DotGrid
-                :dot-size="3"
-                :gap="100"
-                base-color="#C4C2BC"
-                active-color="#F59E0B"
-                :proximity="140"
-                :speed-trigger="80"
-                :shock-radius="220"
-                :shock-strength="4"
-                :max-speed="4000"
-                :resistance="800"
-                :return-duration="1.8"
-                class-name="custom-dot-grid"
-            />
-            <div
-                class="absolute -top-40 -left-40 size-80 rounded-full bg-primary/10 blur-3xl"
-            />
-            <div
-                class="absolute top-1/2 -right-40 size-96 -translate-y-1/2 rounded-full bg-secondary/10 blur-3xl"
-            />
-            <div
-                class="absolute bottom-0 left-1/2 size-[500px] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl"
-            />
+        <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+            <DotGrid :dot-size="3" :gap="100" base-color="#C4C2BC" active-color="#F59E0B" :proximity="140"
+                :speed-trigger="80" :shock-radius="220" :shock-strength="4" :max-speed="4000" :resistance="800"
+                :return-duration="1.8" class-name="custom-dot-grid" />
+            <div class="absolute -top-40 -left-40 size-80 rounded-full bg-primary/10 blur-3xl" />
+            <div class="absolute top-1/2 -right-40 size-96 -translate-y-1/2 rounded-full bg-secondary/10 blur-3xl" />
+            <div class="absolute bottom-0 left-1/2 size-[500px] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
         </div>
 
         <!-- Decorative ducks (click to quack) -->
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
-            <div
-                class="pointer-events-auto absolute top-[15%] left-[8%] rotate-[-15deg]"
-            >
+            <div class="pointer-events-auto absolute top-[15%] left-[8%] rotate-[-15deg]">
                 <div class="hero-duck hero-duck-1">
                     <Duck size="size-14" class="opacity-90" />
                 </div>
             </div>
-            <div
-                class="pointer-events-auto absolute top-[25%] right-[12%] rotate-[20deg]"
-            >
+            <div class="pointer-events-auto absolute top-[25%] right-[12%] rotate-[20deg]">
                 <div class="hero-duck hero-duck-2">
                     <Duck size="size-10" class="opacity-85" />
                 </div>
             </div>
-            <div
-                class="pointer-events-auto absolute bottom-[20%] left-[15%] rotate-[10deg]"
-            >
+            <div class="pointer-events-auto absolute bottom-[20%] left-[15%] rotate-[10deg]">
                 <div class="hero-duck hero-duck-3">
                     <Duck size="size-12" class="opacity-80" />
                 </div>
             </div>
-            <div
-                class="pointer-events-auto absolute right-[8%] bottom-[25%] rotate-[-20deg]"
-            >
+            <div class="pointer-events-auto absolute right-[8%] bottom-[25%] rotate-[-20deg]">
                 <div class="hero-duck hero-duck-4">
                     <Duck size="size-11" class="opacity-85" />
                 </div>
             </div>
         </div>
 
-        <div
-            class="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32"
-        >
+        <div class="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32  select-none">
             <div class="flex flex-col items-center text-center">
                 <!-- Community greeting -->
-                <aside
-                    v-if="props.heroGreetingNote"
+                <aside v-if="props.heroGreetingNote"
                     class="hero-greeting-note relative mb-8 w-full max-w-2xl overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/[0.09] via-background/95 to-background/90 px-5 py-4 text-center shadow-md shadow-primary/[0.07] ring-1 ring-primary/10 backdrop-blur-[2px] sm:px-7 sm:py-5 dark:border-primary/25 dark:from-primary/[0.14] dark:via-background/90 dark:shadow-primary/[0.12] dark:ring-primary/15"
-                    dir="rtl"
-                    lang="ar"
-                    aria-labelledby="hero-greeting-heading"
-                >
-                    <span
-                        id="hero-greeting-heading"
-                        class="sr-only"
-                        lang="en"
-                    >
+                    dir="rtl" lang="ar" aria-labelledby="hero-greeting-heading">
+                    <span id="hero-greeting-heading" class="sr-only" lang="en">
                         Message from the team in Arabic
                     </span>
-                    <div
-                        class="pointer-events-none absolute -top-px right-1/2 h-px w-24 translate-x-1/2 bg-gradient-to-l from-transparent via-primary/50 to-transparent opacity-80"
-                        aria-hidden="true"
-                    />
-                    <div
-                        class="mb-3 flex justify-center"
-                        aria-hidden="true"
-                    >
+                    <div class="pointer-events-none absolute -top-px right-1/2 h-px w-24 translate-x-1/2 bg-gradient-to-l from-transparent via-primary/50 to-transparent opacity-80"
+                        aria-hidden="true" />
+                    <div class="mb-3 flex justify-center" aria-hidden="true">
                         <span
-                            class="inline-flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary shadow-inner ring-1 ring-primary/15 dark:bg-primary/20"
-                        >
-                            <Sparkles
-                                class="size-4 motion-safe:animate-pulse"
-                                stroke-width="2"
-                            />
+                            class="inline-flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary shadow-inner ring-1 ring-primary/15 dark:bg-primary/20">
+                            <Sparkles class="size-4 motion-safe:animate-pulse" stroke-width="2" />
                         </span>
                     </div>
                     <p
-                        class="hero-greeting-text relative text-pretty text-lg leading-[1.85] font-semibold tracking-wide text-foreground sm:text-xl"
-                    >
+                        class="hero-greeting-text relative text-pretty text-lg leading-[1.85] font-semibold tracking-wide text-foreground sm:text-xl">
                         {{ props.heroGreetingNote }}
                     </p>
                 </aside>
                 <!-- Success message -->
-                <div
-                    v-if="props.successMessage"
-                    class="mb-6 w-full max-w-2xl rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
-                >
+                <div v-if="props.successMessage"
+                    class="mb-6 w-full max-w-2xl rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200">
                     {{ props.successMessage }}
                 </div>
                 <!-- Badge -->
-                <div
-                    v-if="props.badge != null"
-                    class="mb-6 flex items-center justify-center gap-2"
-                >
+                <div v-if="props.badge != null" class="mb-6 flex items-center justify-center gap-2">
                     <Duck size="size-8" class="shrink-0 rotate-[-12deg]" />
-                    <Badge
-                        variant="secondary"
-                        class="rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm"
-                    >
+                    <Badge variant="secondary"
+                        class="rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm">
                         {{ props.badge }}
                     </Badge>
                     <Duck size="size-8" class="shrink-0 rotate-[12deg]" />
                 </div>
 
                 <!-- Title -->
-                <h1
-                    v-if="props.title != null"
-                    class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
-                >
+                <h1 v-if="props.title != null"
+                    class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
                     {{ props.title }}
                 </h1>
-                <p
-                    v-if="props.description != null"
-                    class="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg md:text-xl"
-                >
+                <p v-if="props.description != null"
+                    class="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg md:text-xl">
                     {{ props.description }}
                 </p>
 
                 <!-- CTA buttons -->
-                <div
-                    v-if="
-                        props.primaryActionLabel != null ||
-                        (props.secondaryActionLabel &&
-                            props.secondaryActionHref)
-                    "
-                    class="mt-10 flex flex-wrap items-center justify-center gap-3"
-                >
-                    <Button
-                        v-if="props.primaryActionLabel != null"
-                        size="lg"
+                <div v-if="
+                    props.primaryActionLabel != null ||
+                    (props.secondaryActionLabel &&
+                        props.secondaryActionHref)
+                " class="mt-10 flex flex-wrap items-center justify-center gap-3">
+                    <Button v-if="props.primaryActionLabel != null" size="lg"
                         class="gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
-                        @click="scrollToSearch"
-                    >
+                        @click="scrollToSearch">
                         {{ props.primaryActionLabel }}
                         <ArrowDown class="size-4" aria-hidden="true" />
                     </Button>
-                    <Button
-                        v-if="
-                            props.secondaryActionLabel &&
-                            props.secondaryActionHref
-                        "
-                        as-child
-                        variant="outline"
-                        size="lg"
-                        class="gap-2 rounded-xl border-primary/25 bg-background/80 text-base shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:bg-muted/50 hover:shadow-md"
-                    >
+                    <Button v-if="
+                        props.secondaryActionLabel &&
+                        props.secondaryActionHref
+                    " as-child variant="outline" size="lg"
+                        class="gap-2 rounded-xl border-primary/25 bg-background/80 text-base shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:bg-muted/50 hover:shadow-md">
                         <Link :href="props.secondaryActionHref">
                             <Briefcase class="size-4" aria-hidden="true" />
                             {{ props.secondaryActionLabel }}
@@ -330,42 +259,31 @@ onUnmounted(() => {
                 </div>
 
                 <!-- Scroll indicator -->
-                <button
-                    type="button"
+                <button type="button"
                     class="scroll-indicator mt-12 flex flex-col items-center gap-1 rounded-full p-2 text-muted-foreground/70 transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                    aria-label="Scroll down to see more"
-                    @click="scrollToSearch"
-                >
+                    aria-label="Scroll down to see more" @click="scrollToSearch">
                     <span class="text-xs font-medium">Scroll</span>
                     <ArrowDown class="scroll-arrow size-5" aria-hidden="true" />
                 </button>
 
                 <!-- YouTube video -->
-                <div
-                    v-if="youtubeVideoId"
-                    class="mt-12 w-full max-w-3xl overflow-hidden rounded-xl border border-border shadow-lg"
-                >
+                <div v-if="youtubeVideoId"
+                    class="mt-12 w-full max-w-3xl overflow-hidden rounded-xl border border-border shadow-lg">
                     <iframe
                         :src="`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&loop=1&playlist=${youtubeVideoId}`"
-                        title="YouTube video"
-                        class="aspect-video w-full"
-                        allow="
+                        title="YouTube video" class="aspect-video w-full" allow="
                             accelerometer;
                             autoplay;
                             clipboard-write;
                             encrypted-media;
                             gyroscope;
                             picture-in-picture;
-                        "
-                        allowfullscreen
-                    />
+                        " allowfullscreen />
                 </div>
 
                 <!-- Quran verse -->
-                <div
-                    v-if="verse"
-                    class="mt-12 w-full max-w-2xl rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-center"
-                >
+                <div v-if="verse"
+                    class="mt-12 w-full max-w-2xl rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-center">
                     <p class="text-xs font-medium text-muted-foreground">
                         <span dir="rtl">
                             {{ verse.surahNameArabicLong }}
@@ -375,10 +293,7 @@ onUnmounted(() => {
                         — ({{ verse.surahNameTranslation }}) Surah
                         {{ verse.surahNo }}, Ayah {{ verse.ayahNo }}
                     </p>
-                    <p
-                        class="mt-2 text-lg leading-relaxed font-medium text-foreground"
-                        dir="rtl"
-                    >
+                    <p class="mt-2 text-lg leading-relaxed font-medium text-foreground" dir="rtl">
                         {{ verse.arabic1 }}
                     </p>
                     <p class="mt-1 text-sm text-muted-foreground italic">
@@ -390,8 +305,7 @@ onUnmounted(() => {
 
         <!-- Bottom accent gradient -->
         <div
-            class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-80"
-        />
+            class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-80" />
     </section>
 </template>
 
@@ -420,10 +334,12 @@ onUnmounted(() => {
 }
 
 @keyframes float {
+
     0%,
     100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-10px);
     }
@@ -454,10 +370,12 @@ onUnmounted(() => {
 }
 
 @keyframes scroll-bounce {
+
     0%,
     100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(6px);
     }
